@@ -153,6 +153,7 @@ public class OrdenCompraServiceImpl implements OrdenCompraService {
 
         for (SolicitudInscripcionDTO s : solicitudes) {
             for (Archivo a : archivosSave) {
+                comprobantePagoRepository.actualizarSolicitud(pkComprobante,s.getSolicitudDetalle());
                 String url = "CP/" + s.getSolicitud() + "/" + s.getSolicitudDetalle() + "/CP-" + request.getCodigoPago() + "/AR-" + a.getIdArchivo();
                 saveFile(a.getFile(), url);
             }
@@ -183,7 +184,32 @@ public class OrdenCompraServiceImpl implements OrdenCompraService {
             throw new BusinessException(BusinessMsgError.ERROR_ARCHIVOS_INCOMPLETOS);
         }
 
+        int contadorPDF = 0;
+        int contadorXML = 0;
+        int contadorZIP = 0;
+
         for (int i = 0; i < files.length; i++) {
+
+            if(files[i].getContentType().equals("application/pdf") || files[i].getContentType().equals("application/xml") || files[i].getContentType().equals("application/zip")){
+                if(files[i].getContentType().equals("application/pdf")){
+                    contadorPDF++;
+                }
+                if(files[i].getContentType().equals("application/xml")){
+                    contadorXML++;
+                }
+                if(files[i].getContentType().equals("application/zip")){
+                    contadorZIP++;
+                }
+            }
+            else{
+                throw new BusinessException(BusinessMsgError.ERROR_ARCHIVO_FORMATO);
+
+            }
+
+            if(contadorPDF >1 || contadorXML>1 || contadorZIP>1){
+                throw new BusinessException(BusinessMsgError.ERROR_ARCHIVO_CADA_UNO);
+            }
+
 
             if (files[i].getSize() == 0 || files[i].getSize() > Constantes.TAMAÑO_ARCHIVO) {
                 throw new BusinessException(BusinessMsgError.ERROR_ARCHIVOS_TAMAÑO.concat("-").concat(files[i].getOriginalFilename()));
@@ -193,6 +219,8 @@ public class OrdenCompraServiceImpl implements OrdenCompraService {
                 throw new BusinessException(BusinessMsgError.ERROR_ARCHIVO_NOMBRE_LIMITE_CARACTERES.concat("-").concat(files[i].getOriginalFilename()));
             }
         }
+
+
     }
 
     private String obtenerTipoDocumento(String contentType) {
@@ -208,7 +236,7 @@ public class OrdenCompraServiceImpl implements OrdenCompraService {
                 type = "ZIP";
                 break;
             default:
-                type = "OTHER";
+                type = "OTH";
         }
         return type;
     }
