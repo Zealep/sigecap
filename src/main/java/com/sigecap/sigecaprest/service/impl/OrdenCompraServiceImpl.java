@@ -152,8 +152,9 @@ public class OrdenCompraServiceImpl implements OrdenCompraService {
         }
 
         for (SolicitudInscripcionDTO s : solicitudes) {
+            String idSiD = s.getSolicitudDetalle().substring(4);
+            comprobantePagoRepository.actualizarSolicitud(pkComprobante,idSiD);
             for (Archivo a : archivosSave) {
-                comprobantePagoRepository.actualizarSolicitud(pkComprobante,s.getSolicitudDetalle());
                 String url = "CP/" + s.getSolicitud() + "/" + s.getSolicitudDetalle() + "/CP-" + request.getCodigoPago() + "/AR-" + a.getIdArchivo();
                 saveFile(a.getFile(), url);
             }

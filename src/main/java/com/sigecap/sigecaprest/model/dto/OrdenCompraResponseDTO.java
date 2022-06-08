@@ -9,7 +9,11 @@ import java.util.Date;
 public class OrdenCompraResponseDTO {
 
     private String ruc;
+    private String numeroOperacion;
+    private String nombreBanco;
     private Date fecha;
+    private String formaPago;
+    private String observaciones;
     private BigDecimal importeTotal;
     private BigDecimal importePagado;
 
@@ -29,6 +33,37 @@ public class OrdenCompraResponseDTO {
 
     private String fileDocumento;
 
+    public String getNumeroOperacion() {
+        return numeroOperacion;
+    }
+
+    public void setNumeroOperacion(String numeroOperacion) {
+        this.numeroOperacion = numeroOperacion;
+    }
+
+    public String getNombreBanco() {
+        return nombreBanco;
+    }
+
+    public void setNombreBanco(String nombreBanco) {
+        this.nombreBanco = nombreBanco;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public void setFormaPago(String formaPago) {
+        this.formaPago = formaPago;
+    }
+
+    public String getObservaciones() {
+        return observaciones;
+    }
+
+    public void setObservaciones(String observaciones) {
+        this.observaciones = observaciones;
+    }
 
     public String getRuc() {
         return ruc;

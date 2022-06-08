@@ -29,7 +29,11 @@ public class OrdenCompraJdbcRepository {
 
         String sql = "SELECT " +
                 "et.numero_documento ruc," +
+                "oc.numero numero," +
+                "ba.no_banco banco," +
                 "fecha_emision fecha," +
+                "fp.no_forma_pago forma_pago,"+
+                "oc.observaciones observaciones,"+
                 "si.total_precio_venta importe_total," +
                 "monto importe_pagado," +
                 "si.id_solicitud_inscripcion," +
@@ -41,7 +45,9 @@ public class OrdenCompraJdbcRepository {
                 " inner join sgc_tz_solicitud_inscripcion si on oc.id_solicitud_inscripcion = si.id_solicitud_inscripcion" +
                 " inner join sgc_tz_entidad et on si.id_entidad_cliente = et.id_entidad" +
                 " inner join sgc_tz_archivo ac on concat('OC-' ,oc.id_orden_compra) = ac.id_documento" +
-                " where et.numero_documento = :ruc and oc.in_procesado_facturacion = 'N'"+
+                " inner join sgc_tm_banco ba on oc.id_banco = ba.id_banco" +
+                " inner join sgc_tm_forma_pago fp on oc.id_forma_pago = fp.id_forma_pago"+
+                " where et.numero_documento = :ruc and oc.in_procesado_facturacion = 'N' and id_tipo_documento = 3"+
                 " order by fecha desc";
 
 
@@ -55,7 +61,11 @@ public class OrdenCompraJdbcRepository {
 
                 OrdenCompraResponseDTO c = new OrdenCompraResponseDTO();
                 c.setRuc(rs.getString("ruc"));
+                c.setNumeroOperacion(rs.getString("numero"));
+                c.setNombreBanco(rs.getString("banco"));
                 c.setFecha(rs.getDate("fecha"));
+                c.setFormaPago(rs.getString("forma_pago"));
+                c.setObservaciones(rs.getString("observaciones"));
                 c.setImporteTotal(rs.getBigDecimal("importe_total"));
                 c.setImportePagado(rs.getBigDecimal("importe_pagado"));
                 c.setIdSolicitudInscripcion(rs.getString("id_solicitud_inscripcion"));
